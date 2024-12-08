@@ -8,10 +8,9 @@ class MusicLibrary:
         """Adds a track to the library, ensuring no duplicates."""
         if self.duplicate(track):
             return(f'Track {track.title} by {track.artist} is already in the library.')
-        else:
-            self.tracks.append(track)
-            self.sort_tracks()  # Sort tracks explicitly
-            return(f"Track {track.title} by {track.artist} added to the library.")
+        self.tracks.append(track)
+        self.sort_tracks()  # Sort tracks explicitly
+        return(f"Track {track.title} by {track.artist} added to the library.")
 
     def get_tracks(self):
         """Returns the list of tracks."""

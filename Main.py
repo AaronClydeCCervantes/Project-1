@@ -79,18 +79,16 @@ def get_total_duration(queue):
     seconds = total_seconds % 60
     return f"{hours:02}:{minutes:02}:{seconds:02}"
 
-def validate_duration(duration):
-    """Validate and fix incorrect mm:ss format like 2:0 -> 02:00"""
-    parts = duration.split(":")
-    if len(parts) != 2:
-        raise ValueError("Invalid duration format. Expected mm:ss.")
-    
-    minutes, seconds = parts
-    if len(minutes) < 2:
-        minutes = "0" + minutes
-    if len(seconds) < 2:
-        seconds = "0" + seconds
-    return f"{minutes}:{seconds}"
+# def validate_duration(duration):
+#     """Validate and fix incorrect mm:ss format like 2:0 -> 02:00"""
+#     parts = duration.split(':')
+
+#     if len(parts) != 2 or not parts[0].isdigit() or not parts[1].isdigit():
+#         return f'Invalid duration format. Please use mm:ss format.'
+        
+#     mins = int(parts[0])
+#     seconds = int(parts[1])
+#     return mins * 60 + seconds
 
 def show_music_player_options():
     """Display available music player options based on MENUS dictionary."""
@@ -211,11 +209,9 @@ def manage_music_library(library):
         choice = show_menu("Music Library")
         
         if choice == "1":  # Add Track
-            try:
-                resultTrack = Track.create_track(library)
-                print(f'{resultTrack} added successfully!')
-            except ValueError as e:
-                print(f"Error adding track: {e}")
+            result = Track.create_track(library)
+            print(result)
+            DataStorage.save_library(library)
         elif choice == '4':
             return show_menu('main')
 
@@ -228,6 +224,44 @@ def manage_music_library(library):
 
             else:
                 print("The music library is empty.")
+
+            #     try:
+            #         track_index = int(input("Enter track number to modify (0 to skip): ")) - 1
+            #         if 0 <= track_index < len(library.get_tracks()):
+            #             track = library.get_tracks()[track_index]
+            #             print(f"Selected Track: {track}")
+            #             action_choice = input("1. Update  2. Delete  3. Play  4. Discard: ")
+            #             if action_choice == "1":
+            #                 # Update Track
+            #                 new_title = input(f"Enter new title (leave blank to keep '{track.title}'): ") or track.title
+            #                 new_artist = input(f"Enter new artist (leave blank to keep '{track.artist}'): ") or track.artist
+            #                 new_album = input(f"Enter new album (leave blank to keep '{track.album}'): ") or track.album
+            #                 new_duration = input(f"Enter new duration (leave blank to keep '{track.duration}'): ") or track.duration
+
+            #                 # Update track details
+            #                 track.title = new_title
+            #                 track.artist = new_artist
+            #                 track.album = new_album
+            #                 track.duration = new_duration
+
+            #                 print(f"Track '{track.title}' updated successfully!")
+            #             elif action_choice == "2":
+            #                 # Delete Track
+            #                 library.get_tracks().remove(track)
+            #                 print(f"Track '{track.title}' deleted successfully!")
+            #             elif action_choice == "3":
+            #                 # Play Track
+            #                 play_track(track)
+            #             else:
+            #                 print("Changes discarded.")
+            #         else:
+            #             print("Invalid track number.")
+
+            #     except ValueError:
+            #         print('Invalid inout. Please enter a valid number.')
+            # else:
+            #     print("The music library is empty.")
+
 
         elif choice == "3":  # Search Tracks
             print('1. Search by Track Title\n2. Search by Artist Name\n3. Search by Album')
@@ -269,7 +303,7 @@ def manage_music_library(library):
                     elif user.lower() == 'no':
                         print("No modifications were made.")
                     else:
-                        print("Invalid input.")
+                        print("Invalid ")
                 except ValueError:
                     print("Invalid input. Please enter a valid track number.")
             else:
@@ -292,11 +326,13 @@ def modify_track(track, library):
         track.album = new_album
         track.duration = new_duration
         print(f"Track '{track.title}' updated successfully!")
+        DataStorage.save_library(library)
 
     # Delete Track
     elif action_choice == "2":
         library.get_tracks().remove(track)
         print(f"Track '{track.title}' deleted successfully!")
+        DataStorage.save_library(library)
     # Play Track
     elif action_choice == "3":
         play_track(track)
@@ -455,7 +491,7 @@ def show_menu(menu_name):
 def main():
     """Main function to handle the program's execution flow."""
     # Load existing data
-    library, playlists = DataStorage.load_library(), DataStorage.load_playlists
+    library, playlists = DataStorage.load_library(), DataStorage.load_playlists()
 
     # Main menu loop
     while True:
@@ -478,7 +514,7 @@ def main():
             manage_playlists(library, playlists)
         elif choice == 4:
             # Save data and exit
-            DataStorage.save_library
+            DataStorage.save(library, playlists)
             print("Data saved. Goodbye!")
             break
         else:
