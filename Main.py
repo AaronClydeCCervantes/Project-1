@@ -478,7 +478,7 @@ def main():
             manage_playlists(library, playlists)
         elif choice == 4:
             # Save data and exit
-            DataStorage.save(library, playlists)
+            DataStorage.save_library
             print("Data saved. Goodbye!")
             break
         else:
