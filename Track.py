@@ -60,7 +60,7 @@ class Track:
         if not duration or ':' not in duration or len(duration.split(':')) !=2:
             return 'Invalid duration format. Please use mm:ss.'
         
-        additional_artist_input = input('Enter additional artist(s) (if more than 1 additional artist separate by comma or Enter to Skip[]): ').strip()
+        additional_artist_input = input('Enter additional artist(s) (if more than 1 additional artist separate by comma or Enter to Skip): ').strip()
         additional_artist = [artist.strip() for artist in additional_artist_input.split(',')] if additional_artist_input else []
 
         try:
