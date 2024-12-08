@@ -26,50 +26,59 @@ class Track:
     def getAlbum(self):
         return self.album
     
-    def getattrDuration(self):
-        return self.duration
-    
     def getAdditionalArtist(self):
         return self.additional_artist
         
     def getDuration(self):
         #returns the duration of the track in seconds.
-        mins, seconds = int(self.duration.split(':')[0]), int(self.duration.split(':')[1])
+        if not self._is_validDuration():
+            return 'Invalid duration format. Please use mm:ss.'
+        parts = self.duration.split(':')
+        mins = int(parts[0])
+        seconds = int(parts[1])
         return mins * 60 + seconds
 
     def getDurationstr(self):
         #returns the duration of the track as a formatted string (mm:ss).
         total_seconds = self.getDuration()
+        if total_seconds == -1:
+            return "00:00" # default for invalid duration
         mins = total_seconds // 60
         seconds = total_seconds % 60
         return f'{mins:02}:{seconds:02}'
-
+    
+    @staticmethod
+    def _is_validDuration(duration):
+        #validates the duration of the format
+        if not duration or ':' not in duration:
+            return False
+        parts = duration.split(':')
+        if len(parts) != 2 or not parts[0].isdigit() or not parts[1].isdigit():
+            return False
+        seconds = int(parts[1])
+        return 0 <= seconds <= 59 
+    
     def sort_key(self):
         """Sorting key for tracks by title, artist, album, and duration."""
         return self.title.lower(), self.artist.lower(), self.album.lower(), self.duration
     
-    @staticmethod
+
     def create_track(library):
         #creates track and added it to the library
-        title = input('Enter track title: ')
-        artist = input('Enter artist: ')
-        album = input('Enter album: ')
+        title = input('Enter track title: ').strip()
+        artist = input('Enter artist: ').strip()
+        album = input('Enter album: ').strip()
         duration = input('Enter duration (mm:ss): ').strip()
-
-        #validate duration
-        if not duration or ':' not in duration or len(duration.split(':')) !=2:
-            return 'Invalid duration format. Please use mm:ss.'
         
+        if not Track._is_validDuration(duration):
+            return "Invalid duration format. Please enter duration in mm:ss format."
+
         additional_artist_input = input('Enter additional artist(s) (if more than 1 additional artist separate by comma or Enter to Skip): ').strip()
         additional_artist = [artist.strip() for artist in additional_artist_input.split(',')] if additional_artist_input else []
 
-        try:
-            track = Track(title, artist, album, duration, additional_artist)
-            library.add_track(track)
-            return f'Track {title} by {artist}'
-        except ValueError as e:
-            return f'Error adding track: {e}'
-
+        new_track = Track(title, artist, album, duration, additional_artist)
+        return library.add_track(new_track)
+         
     def __str__(self):
     # Returns a string representation of the track.
         if self.additional_artist:
