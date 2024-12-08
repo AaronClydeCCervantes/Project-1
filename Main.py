@@ -167,7 +167,9 @@ def manage_play_music(library, queue):
         # Show current playing track
         if queue:
             print(f"\nCurrently Playing: {queue[current_track_index].title} – {queue[current_track_index].artist}")
-        
+            print("Tracks in Queue:")
+            for i in range(current_track_index, len(queue)):
+                print(f"({i+1}) {queue[i].title} – {queue[i].artist} ({queue[i].duration})")
         show_music_player_options()
         try:
             choice = int(input("Enter your choice: "))
@@ -376,9 +378,9 @@ def manage_playlists(library, playlists):
                             print(playlist.display_playlist())
                             action_choice = input('''
         [1]. Add Track  
-        [2.] Play Specific Track  
-        [3.] Play Playlist  
-        [4.] Exit:
+        [2]. Play Specific Track  
+        [3]. Play Playlist  
+        [4]. Exit:
         > ''')
                             
                             if action_choice == "1":
@@ -386,7 +388,7 @@ def manage_playlists(library, playlists):
                                 track = library.search_track(track_title)
                                 if track:
                                     playlist.add_track(track[0])
-                                    print(f"Track '{track[0].title}' added to playlist '{playlists.name}'!")
+                                    print(f"Track '{track[0].title}' added to playlist '{playlist.name}'!")
                                 else:
                                     print("Track not found.")
                             
@@ -399,8 +401,6 @@ def manage_playlists(library, playlists):
                                         print("Invalid track number.")
                                 except ValueError:
                                     print("Invalid input. Please enter a valid number.")
-                                else:
-                                    print("Invalid option.")
 
                             elif action_choice == "3":
                                 play_playlist(playlist)
@@ -412,7 +412,8 @@ def manage_playlists(library, playlists):
                             else:
                                 print("Invalid option. Please try again.")
 
-                        
+            else:
+                print("No playlists found.")
 
         elif choice == "3":  # Add Track to Playlist
             playlist_name = input("Enter playlist name to add a track to: ")
@@ -446,22 +447,24 @@ def manage_playlists(library, playlists):
                         print(f"{i}. {track.title} by {track.artist} from album {track.album}")
                     
                     # Let the user choose a track to add to the playlist
-                    track_choice = int(input("Enter the track number to add to the playlist: ")) - 1
-                    if 0 <= track_choice < len(search_result):
-                        playlist.add_track(search_result[track_choice])
-                        print(f"Track '{search_result[track_choice].title}' added to playlist '{playlist.name}'!")
-                    else:
-                        print("Invalid track number.")
+                    track_choice = input("Enter the track number to add to the playlist: ")
+                    try:
+                        track_choice = int(track_choice) - 1
+                        if 0 <= track_choice < len(search_result):
+                            playlist.add_track(search_result[track_choice])
+                            print(f"Track '{search_result[track_choice].title}' added to playlist '{playlist.name}'!")
+                        else:
+                            print("Invalid track number.")
+                    except ValueError:
+                        print("Invalid input. Please enter a valid number.")
             else:
                 print("Playlist not found.")
-
-
-
 
         elif choice == "4":  # Go Back
             break
         else:
             print("Invalid choice. Please try again.")
+
 
 # Helper functions to play the track or playlist
 def play_track(track):

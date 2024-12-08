@@ -1,5 +1,4 @@
 import json
-import random
 from Track import Track
 
 class Queue:
@@ -8,7 +7,7 @@ class Queue:
         self.current = None
         self.shuffle = False
         self.repeat = False
-        self.pagination = 10
+        self.pagination = 10  # Number of tracks per page
         self.total_duration = 0
         self.current_index = None  
 
@@ -58,26 +57,6 @@ class Queue:
         self.total_duration = sum(track.duration for track in self.list)
         return f"Added {len(new_tracks)} tracks to the queue."
 
-    def display_queue(self, page_number=1):
-        if not self.list:
-            return "The queue is empty."
-
-        total_pages = (len(self.list) + self.pagination - 1) // self.pagination
-        page_number = max(1, min(page_number, total_pages))
-
-        total_duration = sum(track.duration for track in self.list)
-        header = f"Total Duration: {total_duration // 3600} hr {total_duration % 3600 // 60} min {total_duration % 60} sec\n"
-        header += f"Shuffle: {'On' if self.shuffle else 'Off'} | Repeat: {'On' if self.repeat else 'Off'}\n"
-        header += f"<Page {page_number} of {total_pages}>\n"
-
-        start = (page_number - 1) * self.pagination
-        end = min(start + self.pagination, len(self.list))
-        tracks = "\n".join(
-            f"({i + 1}) {track.title} – {track.artist} ({self._format_duration(track.duration)})"
-            for i, track in enumerate(self.list[start:end], start=start)
-        )
-
-        return header + tracks
 
     def _format_duration(self, duration):
         minutes = duration // 60
@@ -111,5 +90,3 @@ class Queue:
             print("No saved queue found.")
         except Exception as e:
             print(f"Error loading queue: {e}")
-
-    
