@@ -197,7 +197,7 @@ def manage_play_music(library, queue):
                 playing = False
                 break  # Exit playback options
             elif choice == 7:  # Exit
-                DataStorage.save(library, queue)
+                DataStorage.save_library
                 print("Queue saved successfully. Exiting player.")
                 break  # Exit the loop and program
             else:
@@ -493,7 +493,7 @@ def show_menu(menu_name):
 def main():
     """Main function to handle the program's execution flow."""
     # Load existing data
-    library, playlists = DataStorage.load()
+    library, playlists = DataStorage.load_library(), DataStorage.load_playlists
 
     # Main menu loop
     while True:
