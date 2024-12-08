@@ -30,7 +30,7 @@ class DataStorage:
         data = {"Playlists": {playlist.name: [track.__dict__ for track in playlist.tracks] for playlist in playlists}}
         
         try:
-            with open('MusicData.json', 'w') as file:
+            with open('Playlists.json', 'w') as file:
                 json.dump(data, file, indent=4)  # Pretty-printing for readability
             print("Playlists saved successfully.")
         except Exception as e:
@@ -75,7 +75,7 @@ class DataStorage:
     def load_playlists():
         """Load playlists from JSON."""
         try:
-            with open('MusicData.json', 'r') as file:
+            with open('Playlists.json', 'r') as file:
                 data = json.load(file)
 
             playlists = []
