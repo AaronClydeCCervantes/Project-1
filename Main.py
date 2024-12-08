@@ -79,16 +79,16 @@ def get_total_duration(queue):
     seconds = total_seconds % 60
     return f"{hours:02}:{minutes:02}:{seconds:02}"
 
-# def validate_duration(duration):
-#     """Validate and fix incorrect mm:ss format like 2:0 -> 02:00"""
-#     parts = duration.split(':')
+def validate_duration(duration):
+    """Validate and fix incorrect mm:ss format like 2:0 -> 02:00"""
+    parts = duration.split(':')
 
-#     if len(parts) != 2 or not parts[0].isdigit() or not parts[1].isdigit():
-#         return f'Invalid duration format. Please use mm:ss format.'
+    if len(parts) != 2 or not parts[0].isdigit() or not parts[1].isdigit():
+        return f'Invalid duration format. Please use mm:ss format.'
         
-#     mins = int(parts[0])
-#     seconds = int(parts[1])
-#     return mins * 60 + seconds
+    mins = int(parts[0])
+    seconds = int(parts[1])
+    return mins * 60 + seconds
 
 def show_music_player_options():
     """Display available music player options based on MENUS dictionary."""
