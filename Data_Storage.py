@@ -5,7 +5,7 @@ from Track import Track
 
 class DataStorage:
     @staticmethod
-    def save_library(library, filepath='MusicData.json'):
+    def save_library(library):
         """Save music library to JSON."""
         if library is None:
             print("No library to save.")
@@ -14,14 +14,14 @@ class DataStorage:
         data = {"Music_Library": [track.__dict__ for track in library.get_tracks()]}
         
         try:
-            with open(filepath, 'w') as file:
+            with open('MusicData.json', 'w') as file:
                 json.dump(data, file, indent=4)  # Pretty-printing for readability
-            print(f"Library saved successfully to {filepath}.")
+            print("Library saved successfully.")
         except Exception as e:
             print(f"Error saving library: {e}")
 
     @staticmethod
-    def save_playlists(playlists, filepath='Playlists.json'):
+    def save_playlists(playlists):
         """Save playlists to JSON."""
         if playlists is None:
             print("No playlists to save.")
@@ -30,17 +30,17 @@ class DataStorage:
         data = {"Playlists": {playlist.name: [track.__dict__ for track in playlist.tracks] for playlist in playlists}}
         
         try:
-            with open(filepath, 'w') as file:
+            with open('Playlists.json', 'w') as file:
                 json.dump(data, file, indent=4)  # Pretty-printing for readability
-            print(f"Playlists saved successfully to {filepath}.")
+            print("Playlists saved successfully.")
         except Exception as e:
             print(f"Error saving playlists: {e}")
 
     @staticmethod
-    def load_library(filepath='MusicData.json'):
+    def load_library():
         """Load music library from JSON."""
         try:
-            with open(filepath, 'r') as file:
+            with open('MusicData.json', 'r') as file:
                 data = json.load(file)
 
             library = MusicLibrary()
@@ -50,9 +50,10 @@ class DataStorage:
                 for track_data in data["Music_Library"]:
                     try:
                         duration = track_data["duration"]
-                        if isinstance(duration, str) and ":" in duration:  # If duration is in MM:SS format
-                            minutes, seconds = map(int, duration.split(":"))
-                            duration = minutes * 60 + seconds  # Convert to seconds
+                        if isinstance(duration, int):  # If duration is in seconds
+                            minutes = duration // 60
+                            seconds = duration % 60
+                            duration = f"{minutes:02}:{seconds:02}"
 
                         track = Track(
                             title=track_data["title"],
@@ -66,15 +67,15 @@ class DataStorage:
 
             return library
 
-        except (FileNotFoundError, json.JSONDecodeError) as e:
-            print(f"Library data not found or corrupted. Error: {e} - Initializing new library.")
+        except (FileNotFoundError, json.JSONDecodeError):
+            print("Library data not found or corrupted. Initializing new library.")
             return MusicLibrary()
 
     @staticmethod
-    def load_playlists(filepath='Playlists.json'):
+    def load_playlists():
         """Load playlists from JSON."""
         try:
-            with open(filepath, 'r') as file:
+            with open('Playlists.json', 'r') as file:
                 data = json.load(file)
 
             playlists = []
@@ -85,9 +86,10 @@ class DataStorage:
                     for track_data in track_data_list:
                         try:
                             duration = track_data["duration"]
-                            if isinstance(duration, str) and ":" in duration:  # If duration is in MM:SS format
-                                minutes, seconds = map(int, duration.split(":"))
-                                duration = minutes * 60 + seconds  # Convert to seconds
+                            if isinstance(duration, int):  # If duration is in seconds
+                                minutes = duration // 60
+                                seconds = duration % 60
+                                duration = f"{minutes:02}:{seconds:02}"
 
                             track = Track(
                                 title=track_data["title"],
@@ -102,6 +104,6 @@ class DataStorage:
 
             return playlists
 
-        except (FileNotFoundError, json.JSONDecodeError) as e:
-            print(f"Playlists data not found or corrupted. Error: {e} - Initializing new playlists.")
+        except (FileNotFoundError, json.JSONDecodeError):
+            print("Playlists data not found or corrupted. Initializing new playlists.")
             return []
