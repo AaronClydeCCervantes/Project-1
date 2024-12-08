@@ -165,44 +165,27 @@ def manage_play_music(library, queue):
 
 
     # Now show the music player options and manage playback
-    while True:
-        # Show current playing track
-        if queue:
-            print(f"\nCurrently Playing: {queue[current_track_index].title} – {queue[current_track_index].artist}")
-        
-        show_music_player_options()
-        try:
+    try:
             choice = int(input("Enter your choice: "))
             if choice == 1:  # Play
-                print("Resuming playback.")
+                print(queue.play())
             elif choice == 2:  # Next Track
-                if queue:
-                    current_track_index = (current_track_index + 1) % len(queue)
-                    print(f"Next Track: {queue[current_track_index].title} – {queue[current_track_index].artist}")
-                else:
-                    print("No tracks are currently playing.")
+                print(queue.skip())
             elif choice == 3:  # Previous Track
-                if queue:
-                    current_track_index = (current_track_index - 1) % len(queue)
-                    print(f"Previous Track: {queue[current_track_index].title} – {queue[current_track_index].artist}")
-                else:
-                    print("No tracks are currently playing.")
+                print(queue.previous())
             elif choice == 4:  # Toggle Repeat
-                print("Toggling repeat mode.")
+                print(queue.toggle_repeat())
             elif choice == 5:  # Toggle Shuffle
-                print("Toggling shuffle mode.")
+                print(queue.toggle_shuffle())
             elif choice == 6:  # Clear Queue
-                queue.clear()
+                queue.list.clear()
                 print("Queue has been cleared.")
-                playing = False
-                break  # Exit playback options
             elif choice == 7:  # Exit
-                DataStorage.save_library
+                queue.save_queue()  # Save the queue before exiting
                 print("Queue saved successfully. Exiting player.")
-                break  # Exit the loop and program
             else:
                 print("Invalid choice. Please try again.")
-        except ValueError:
+    except ValueError:
             print("Invalid input. Please enter a valid number between 1 and 7.")
 
 def manage_music_library(library):
@@ -307,7 +290,6 @@ def modify_track(track, library):
     else:
         print('Invalid choice. Please enter a valid option.')
 
-
 def manage_playlists(library, playlists):
     """Handles operations related to playlists, including CRUD."""
     while True:
@@ -324,7 +306,7 @@ def manage_playlists(library, playlists):
         elif choice == "2":  # View all Playlists
             if playlists:
                 print("\nPlaylists:")
-                for i, playlist in enumerate(playlists, 1):
+                for i, playlist in enumerate(playlists, 1):  # Use enumerate instead of len
                     print(f"[{i}]. {playlist.name} ({len(playlist.tracks)} tracks)")
 
                 # Get and validate playlist selection
@@ -334,6 +316,7 @@ def manage_playlists(library, playlists):
                     if 0 <= playlist_index < len(playlists):
                         playlist = playlists[playlist_index]
                         print(f"Selected Playlist: {playlist.name}")
+
                         
                         # Action menu for playlist
                         while True:
@@ -348,9 +331,9 @@ def manage_playlists(library, playlists):
                             if action_choice == "1":
                                 track_title = input("Enter track title to add: ")
                                 track = library.search_track(track_title)
-                                if track:
+                                if track:  # Ensure the result is not empty
                                     playlist.add_track(track[0])
-                                    print(f"Track '{track[0].title}' added to playlist '{playlists.name}'!")
+                                    print(f"Track '{track[0].title}' added to playlist '{playlist.name}'!")
                                 else:
                                     print("Track not found.")
                             
@@ -363,8 +346,6 @@ def manage_playlists(library, playlists):
                                         print("Invalid track number.")
                                 except ValueError:
                                     print("Invalid input. Please enter a valid number.")
-                                else:
-                                    print("Invalid option.")
 
                             elif action_choice == "3":
                                 play_playlist(playlist)
@@ -375,8 +356,6 @@ def manage_playlists(library, playlists):
 
                             else:
                                 print("Invalid option. Please try again.")
-
-                        
 
         elif choice == "3":  # Add Track to Playlist
             playlist_name = input("Enter playlist name to add a track to: ")
@@ -400,27 +379,27 @@ def manage_playlists(library, playlists):
                     print("Invalid option. Please try again.")
                     continue
                 
-                # If no tracks found, display the message returned by search_track
-                if isinstance(search_result, str):  # Means it's an error message
-                    print(search_result)
+                # Handle empty or error results
+                if not search_result:  # No results found
+                    print("No tracks found.")
                 else:
-                    # If search_result is a list of tracks
-                    print(f"Search results:")
+                    # Display search results
+                    print("Search results:")
                     for i, track in enumerate(search_result, 1):
                         print(f"{i}. {track.title} by {track.artist} from album {track.album}")
                     
                     # Let the user choose a track to add to the playlist
-                    track_choice = int(input("Enter the track number to add to the playlist: ")) - 1
-                    if 0 <= track_choice < len(search_result):
-                        playlist.add_track(search_result[track_choice])
-                        print(f"Track '{search_result[track_choice].title}' added to playlist '{playlist.name}'!")
-                    else:
-                        print("Invalid track number.")
+                    try:
+                        track_choice = int(input("Enter the track number to add to the playlist: ")) - 1
+                        if 0 <= track_choice < len(search_result):
+                            playlist.add_track(search_result[track_choice])
+                            print(f"Track '{search_result[track_choice].title}' added to playlist '{playlist.name}'!")
+                        else:
+                            print("Invalid track number.")
+                    except ValueError:
+                        print("Invalid input. Please enter a valid number.")
             else:
                 print("Playlist not found.")
-
-
-
 
         elif choice == "4":  # Go Back
             break

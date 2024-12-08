@@ -74,7 +74,7 @@ class Track:
     # Returns a string representation of the track.
         if self.additional_artist:
             additional = ", ".join(self.additional_artist)
-            return (f"Title: {self.title}, Artist: {self.artist} feat. {additional}, "
+            return (f"Title: {self.title}, Artist: {self.artist} Additional Artist. {additional}, "
                     f"Album: {self.album}, Duration: {self.duration}")
         else:
             return (f"Title: {self.title}, Artist: {self.artist}, "
