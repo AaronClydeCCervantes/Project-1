@@ -26,7 +26,7 @@ class Track:
     def getAlbum(self):
         return self.album
     
-    def getDuration(self):
+    def getattrDuration(self):
         return self.duration
     
     def getAdditionalArtist(self):
@@ -54,12 +54,14 @@ class Track:
         title = input('Enter track title: ')
         artist = input('Enter artist: ')
         album = input('Enter album: ')
-        duration = input('Enter duration (mm:ss): ')
+        duration = input('Enter duration (mm:ss): ').strip()
+
+        #validate duration
         if not duration or ':' not in duration or len(duration.split(':')) !=2:
             return 'Invalid duration format. Please use mm:ss.'
         
-        additional_artist_input = input('Enter additional artist (Enter to Skip[]): ')
-        additional_artist = additional_artist_input.split if additional_artist_input.split() else None
+        additional_artist_input = input('Enter additional artist(s) (if more than 1 additional artist separate by comma or Enter to Skip[]): ').strip()
+        additional_artist = [artist.strip() for artist in additional_artist_input.split(',')] if additional_artist_input else []
 
         try:
             track = Track(title, artist, album, duration, additional_artist)
@@ -69,7 +71,7 @@ class Track:
             return f'Error adding track: {e}'
 
     def __str__(self):
-    # Check if additional artists exist, then format accordingly
+    # Returns a string representation of the track.
         if self.additional_artist:
             additional = ", ".join(self.additional_artist)
             return (f"Title: {self.title}, Artist: {self.artist} feat. {additional}, "
