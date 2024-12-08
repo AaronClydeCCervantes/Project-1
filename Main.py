@@ -227,44 +227,6 @@ def manage_music_library(library):
             else:
                 print("The music library is empty.")
 
-            #     try:
-            #         track_index = int(input("Enter track number to modify (0 to skip): ")) - 1
-            #         if 0 <= track_index < len(library.get_tracks()):
-            #             track = library.get_tracks()[track_index]
-            #             print(f"Selected Track: {track}")
-            #             action_choice = input("1. Update  2. Delete  3. Play  4. Discard: ")
-            #             if action_choice == "1":
-            #                 # Update Track
-            #                 new_title = input(f"Enter new title (leave blank to keep '{track.title}'): ") or track.title
-            #                 new_artist = input(f"Enter new artist (leave blank to keep '{track.artist}'): ") or track.artist
-            #                 new_album = input(f"Enter new album (leave blank to keep '{track.album}'): ") or track.album
-            #                 new_duration = input(f"Enter new duration (leave blank to keep '{track.duration}'): ") or track.duration
-
-            #                 # Update track details
-            #                 track.title = new_title
-            #                 track.artist = new_artist
-            #                 track.album = new_album
-            #                 track.duration = new_duration
-
-            #                 print(f"Track '{track.title}' updated successfully!")
-            #             elif action_choice == "2":
-            #                 # Delete Track
-            #                 library.get_tracks().remove(track)
-            #                 print(f"Track '{track.title}' deleted successfully!")
-            #             elif action_choice == "3":
-            #                 # Play Track
-            #                 play_track(track)
-            #             else:
-            #                 print("Changes discarded.")
-            #         else:
-            #             print("Invalid track number.")
-
-            #     except ValueError:
-            #         print('Invalid inout. Please enter a valid number.')
-            # else:
-            #     print("The music library is empty.")
-
-
         elif choice == "3":  # Search Tracks
             print('1. Search by Track Title\n2. Search by Artist Name\n3. Search by Album')
             searchinput = input('Enter a number: ')
